@@ -1,0 +1,6 @@
+flask==0.10
+flask_cors
+gunicorn==19.7.1
+tensorflow
+numpy
+scikit-image
