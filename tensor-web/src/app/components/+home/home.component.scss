@@ -1,0 +1,73 @@
+.home{
+    canvas { 
+        border: 1px solid #999;
+    }
+
+    .example-spacer {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+    .example-card {
+        width: 92%;
+        margin: 4%;
+    }
+    
+    .example-header-image {
+        background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+        background-size: cover;
+    }
+
+    .fix-high{
+        height: 35px;
+    }
+
+    .fix-icon{
+        color: #3f51b5;
+        margin: 5px 5px 5px 5px;
+        cursor: pointer;
+    }
+
+    .speechbubble-wrapper {
+        position: absolute;
+        bottom: 22px;
+        text-align: center !important;
+        width: 100%;
+        pointer-events: none;
+    }
+
+    .machine-speechbubble {
+        background-color: #f2f2f2;
+        min-width: 50px;
+        border-radius: 5px;
+        display: inline-block;
+        font-size: 17px;
+        letter-spacing: 1px;
+        padding: 10px 16px;
+        .div {
+            display: inline;
+        }
+    }
+    
+    .machine-speechbubble-tip {
+        background-image: url('/assets/objects.svg');
+        background-repeat: no-repeat;
+        background-size: 35px 30px;
+        background-position: 0px 0px;
+        width: 35px;
+        height: 30px;
+        bottom: -12px;
+        margin: 0 auto;
+        margin-top: -13px;
+    }
+
+
+}
+
+::ng-deep snack-bar-container.custom-class {
+    background: yellow;
+  }
+  
+::ng-deep .custom-class .mat-simple-snackbar {
+    color: green;
+}
