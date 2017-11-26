@@ -23,6 +23,7 @@ export class ImagesService {
       .catch(this.handleError);
   }
 
+
   private extractData(res: Response) {
     if (res.status < 200 || res.status >= 300) {
       throw new Error('Bad response status: ' + res.status);

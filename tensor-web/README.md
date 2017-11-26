@@ -20,5 +20,7 @@ Contact us if you have any question or improvement proposal.
 * <a href="mailto:dvdchavarri@gmail.com?subject=TensorFlow%20basic%20workshop">dvdchavarri@gmail.com</a>
 
 
-### Special thanks and metions to follow resources:
+### Codemotion2017 start web with prod environment
+
+ng serve --env=prod
 
