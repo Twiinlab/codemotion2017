@@ -115,7 +115,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         Observable.fromEvent(canvasEl, 'touchmove'));
 
     eventDown
-      .switchMap((e) => {
+      .switchMap((e: Event) => {
+        e.preventDefault();
         return eventMove
                 .takeUntil(eventUp)
                 .pairwise();
