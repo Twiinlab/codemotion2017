@@ -3,4 +3,5 @@
 /node_modules
 /web/node_modules
 /web/dist
+/dist
 npm-debug.log
