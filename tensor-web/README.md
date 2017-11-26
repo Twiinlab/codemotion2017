@@ -10,6 +10,8 @@ Run following scripts:
 * `npm run web:build`           to build the web application.
 * `npm run ethereum:deploy`     to deploy etherium virtual machine (EVM).
 * `npm run app`                 to deploy the API and web site.
+* `ng serve --env=prod`         to run locally website but point to deployed service
+
 
 Navigate to [`http://localhost:3000/`](http://localhost:3000/).The app will popup in your browser.
 
@@ -19,8 +21,4 @@ Contact us if you have any question or improvement proposal.
 * <a href="mailto:ruchavarri@gmail.com?subject=TensorFlow%20basic%20workshop">ruchavarri@gmail.com</a>
 * <a href="mailto:dvdchavarri@gmail.com?subject=TensorFlow%20basic%20workshop">dvdchavarri@gmail.com</a>
 
-
-### Codemotion2017 start web with prod environment
-
-ng serve --env=prod
 

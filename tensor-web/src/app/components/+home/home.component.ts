@@ -1,14 +1,8 @@
 import {
-  Component, Input, ElementRef, AfterViewInit, OnInit, ViewChild
+  Component, Input, ElementRef, AfterViewInit, OnDestroy, ViewChild
 } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
-
-// import { FirebaseApp } from 'angularfire2'; // for methods
-// // import * as firebase from 'firebase'; // for typings
-// import { AngularFirestore } from 'angularfire2/firestore';
-// import { AngularFireAuth } from 'angularfire2/auth';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/takeUntil';
@@ -27,7 +21,7 @@ declare var firebase: any;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('myBoard') public canvas: ElementRef;
   @ViewChild('downloadButton') public downloadButton: ElementRef;
@@ -44,7 +38,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   authState: any;
   maxValue: any;
 
-  // categoryList = ['duck', 'smile', 'car', 'pencil', 'star', 'burger', 'cookie', 'rabbit', 'moon', 'icecream'];
   categoryList = ['smile', 'car', 'pencil', 'burger', 'moon', 'hand', 'tornado', 'scissors', 'mug', 'sock' ];
   target: String;
   bannerMessage: String;
@@ -56,35 +49,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private cx: CanvasRenderingContext2D;
 
   constructor(
-    private imagesService: ImagesService,
-    public snackBar: MatSnackBar
-    // private authService: AuthService,
-    // private fb: FirebaseApp,
-    // private ngstore: AngularFirestore,
-    // private af: AngularFireAuth
+    private imagesService: ImagesService
   ) { }
 
-
-  public ngOnInit() {
-    // this.items = this.ngstore.collection('items').valueChanges();
-    // this.initFirebase();
-    // this.initTarget();
-    // this.initChronometer();
-  }
-
-
-  public initFirebase() {
-    // firebase.initializeApp(environment.firebase);
-
-    // Get a reference to the storage service, which is used to create references in your storage bucket
-    // this.auth = firebase.auth();
-    // this.database = firebase.database();
-    // this.storage = firebase.storage();
-    // this.authService.anonymousLogin();
-    // this.af.authState.subscribe((auth) => {
-    //   this.authState = auth;
-    // });
-  }
 
   public ngAfterViewInit() {
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -134,25 +101,35 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   private captureEvents(canvasEl: HTMLCanvasElement) {
     const self = this;
-    const eventUp = Observable.fromEvent(canvasEl, 'mouseup');
 
-    Observable
-      .fromEvent(canvasEl, 'mousedown')
+    const eventUp = Observable.merge(
+      Observable.fromEvent(canvasEl, 'mouseup'),
+      Observable.fromEvent(canvasEl, 'touchend'));
+
+    const eventDown = Observable.merge(
+      Observable.fromEvent(canvasEl, 'mousedown'),
+      Observable.fromEvent(canvasEl, 'touchstart'));
+
+    const eventMove = Observable.merge(
+        Observable.fromEvent(canvasEl, 'mousemove'),
+        Observable.fromEvent(canvasEl, 'touchmove'));
+
+    eventDown
       .switchMap((e) => {
-        return Observable
-          .fromEvent(canvasEl, 'mousemove')
-          .takeUntil(eventUp)
-          .pairwise();
+        return eventMove
+                .takeUntil(eventUp)
+                .pairwise();
       })
-      .subscribe((res: [MouseEvent, MouseEvent]) => {
+      .subscribe((res: any) => {
         const rect = canvasEl.getBoundingClientRect();
+        const isMouseEvent = res[0].type === 'mousemove';
         const prevPos = {
-          x: res[0].clientX - rect.left,
-          y: res[0].clientY - rect.top
+          x: (isMouseEvent ? res[0].clientX : res[0].targetTouches[0].clientX) - rect.left,
+          y: (isMouseEvent ? res[0].clientY : res[0].targetTouches[0].clientY) - rect.top
         };
         const currentPos = {
-          x: res[1].clientX - rect.left,
-          y: res[1].clientY - rect.top
+          x: (isMouseEvent ? res[1].clientX : res[1].targetTouches[0].clientX) - rect.left,
+          y: (isMouseEvent ? res[1].clientY : res[1].targetTouches[0].clientY) - rect.top
         };
         this.drawOnCanvas(prevPos, currentPos);
       });
@@ -164,8 +141,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         .subscribe(result => {
           console.log('prediction: ' + result.prediction);
           self.maxValue = self.categoryList[self.getHighestValuePosition(result.prediction)];
-          // config.duration = 2000;
-          // self.snackBar.open(self.maxValue, 'close', self.getMessageConfig(self.target, self.maxValue));
           self.bannerMessage = self.checkPrediction(self.target, self.maxValue);
         });
       });
@@ -174,12 +149,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   checkPrediction( target, prediction) {
     this.stopChrono = (target === prediction);
     return this.stopChrono ? 'Mmm... I know, it is ' + target : 'Could be ' + prediction + '?';
-  }
-
-  getMessageConfig( target, prediction) {
-    const config = new MatSnackBarConfig();
-    config.extraClasses = ['custom-class'];
-    return config;
   }
 
   private getHighestValuePosition(list) {
